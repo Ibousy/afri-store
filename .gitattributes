@@ -1,0 +1,17 @@
+# Force LF pour les scripts shell (sinon ils cassent sur Linux/Docker)
+docker/entrypoint.sh text eol=lf
+
+# PHP et web — auto
+*.php text=auto
+*.css text=auto
+*.js  text=auto
+*.html text=auto
+*.sql text=auto
+
+# Binaires
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.webp binary
+*.mp4  binary
+*.exe  binary
