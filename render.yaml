@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: afri-store
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: SITE_URL
+        sync: false
+      - key: MYSQLHOST
+        sync: false
+      - key: MYSQLUSER
+        sync: false
+      - key: MYSQLPASSWORD
+        sync: false
+      - key: MYSQLDATABASE
+        sync: false
+      - key: MYSQLPORT
+        value: "3306"
+      - key: SITE_NAME
+        value: "Afri-Store"
