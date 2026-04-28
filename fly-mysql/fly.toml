@@ -1,0 +1,26 @@
+# Fly.io configuration — MySQL pour Afri-Store
+app = "afri-store-mysql"
+primary_region = "cdg"
+
+[build]
+  image = "mysql:8.0"
+
+[env]
+  MYSQL_DATABASE = "temu_clone"
+  MYSQL_USER     = "afri_user"
+
+[mounts]
+  source      = "afri_mysql_data"
+  destination = "/var/lib/mysql"
+
+[[services]]
+  internal_port = 3306
+  protocol      = "tcp"
+
+  [[services.ports]]
+    port = 3306
+
+[[vm]]
+  memory   = "256mb"
+  cpu_kind = "shared"
+  cpus     = 1

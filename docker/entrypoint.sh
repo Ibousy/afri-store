@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# Railway fournit $PORT dynamiquement — on configure Apache pour l'écouter
+# Fly.io fournit $PORT (souvent 8080), Railway fournit $PORT aussi
 PORT=${PORT:-80}
 sed -i "s/\${PORT}/$PORT/g" /etc/apache2/sites-available/000-default.conf
 echo "Listen $PORT" > /etc/apache2/ports.conf

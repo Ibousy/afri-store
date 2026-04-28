@@ -1,0 +1,54 @@
+name: Deploy to InfinityFree
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Inject production config
+        env:
+          DB_HOST:  ${{ secrets.DB_HOST }}
+          DB_USER:  ${{ secrets.DB_USER }}
+          DB_PASS:  ${{ secrets.DB_PASS }}
+          DB_NAME:  ${{ secrets.DB_NAME }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+        run: |
+          sed -i "s|getenv('MYSQLHOST')     ?: 'localhost'|'${DB_HOST}'|g"    includes/config.php
+          sed -i "s|getenv('MYSQLUSER')     ?: 'root'|'${DB_USER}'|g"         includes/config.php
+          sed -i "s|getenv('MYSQLPASSWORD') ?: ''|'${DB_PASS}'|g"             includes/config.php
+          sed -i "s|getenv('MYSQLDATABASE') ?: 'temu_clone'|'${DB_NAME}'|g"   includes/config.php
+          sed -i "s|getenv('MYSQLPORT')     ?: '3306'|'3306'|g"               includes/config.php
+          sed -i "s|getenv('SITE_NAME') ?: 'Afri-Store'|'Afri-Store'|g"      includes/config.php
+          sed -i "s|getenv('SITE_URL')  ?: 'http://localhost/temu-clone'|'${SITE_URL}'|g" includes/config.php
+          sed -i "s|getenv('SITE_URL') ?: 'https://maybe-unsteady-broker.ngrok-free.dev/temu-clone'|'${SITE_URL}'|g" includes/config.php
+          echo "✅ config.php injecté pour la production"
+
+      - name: Deploy via FTP to InfinityFree
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server:   ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          server-dir: /htdocs/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            fly.toml
+            fly-mysql/**
+            Dockerfile
+            docker/**
+            render.yaml
+            railway.toml
+            ngrok.exe
+            fichier.env
+            *.log
+            README.md
+            database.sql
